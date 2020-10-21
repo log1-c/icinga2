@@ -299,6 +299,7 @@ jobs:
     name: Windows
 
     strategy:
+      fail-fast: false
       matrix:
         bits: [32, 64]
 
@@ -326,10 +327,10 @@ jobs:
         run: |
           git checkout -B master
           cd windows-icinga2
-          $Env:BOOST_INCLUDE_DIR = $Env:BOOST_ROOT_1_72_0
           powershell.exe .\source.ps1
 
       - name: Binary
         working-directory: windows-icinga2
         run: |
+          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
           powershell.exe .\build.ps1

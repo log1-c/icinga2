@@ -326,6 +326,7 @@ jobs:
         run: |
           git checkout -B master
           cd windows-icinga2
+          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
           powershell.exe .\source.ps1
 
       - name: Binary

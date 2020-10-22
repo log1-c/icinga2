@@ -332,8 +332,5 @@ jobs:
       - name: Binary
         working-directory: windows-icinga2
         run: |
-          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
-          $Env:BOOST_INCLUDE_DIR = $Env:BOOST_ROOT + '/include'
-          $Env:BOOST_LIBRARYDIR = $Env:BOOST_ROOT + '/lib'
           (Get-Content build.ps1 |Select-String -SimpleMatch -NotMatch BOOST) |Set-Content build.ps1
           & .\build.ps1

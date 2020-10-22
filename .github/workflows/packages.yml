@@ -332,12 +332,6 @@ jobs:
       - name: Binary
         working-directory: windows-icinga2
         run: |
-          dir ($Env:BOOST_ROOT_1_72_0 + '/include')
-          dir ($Env:BOOST_ROOT_1_72_0 + '/lib')
-          dir ($Env:BOOST_ROOT_1_72_0 + '/libs')
-          cd icinga2
-          Set-Content ./CMakeLists.txt "cmake_policy(SET CMP0074 NEW)
-          $(Get-Content -Raw ./CMakeLists.txt)"
-          cd ..
-          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
+          $Env:BOOST_INCLUDEDIR = $Env:BOOST_ROOT_1_72_0 + '/include'
+          $Env:BOOST_LIBRARYDIR = $Env:BOOST_ROOT_1_72_0 + '/lib'
           & .\build.ps1

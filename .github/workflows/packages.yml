@@ -28,26 +28,45 @@ jobs:
       #  /c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/Tools
 
     steps:
-      - name: Build tools
-        run: |
-          choco install -y visualstudio2019community
-          choco install -y visualstudio2019-workload-netcoretools
-          choco install -y visualstudio2019-workload-vctools
-          choco install -y visualstudio2019-workload-manageddesktop
-          choco install -y visualstudio2019-workload-nativedesktop
-          choco install -y visualstudio2019-workload-universal
-          choco install -y visualstudio2019buildtools
-          choco install -y cmake
-          choco install -y winflexbison3
-          choco install -y windows-sdk-8.1
-          choco install -y wixtoolset
-
       - name: Checkout HEAD
         uses: actions/checkout@v1
 
       - name: windows-icinga2
         run: |
           git clone https://git.icinga.com/packaging/windows-icinga2.git
+
+      - name: Build tools
+        run: |
+          # VS
+          $VsVersion = 2019
+          choco install -y "visualstudio${VsVersion}community"
+          choco install -y "visualstudio${VsVersion}-workload-netcoretools"
+          choco install -y "visualstudio${VsVersion}-workload-vctools"
+          choco install -y "visualstudio${VsVersion}-workload-manageddesktop"
+          choco install -y "visualstudio${VsVersion}-workload-nativedesktop"
+          choco install -y "visualstudio${VsVersion}-workload-universal"
+          choco install -y "visualstudio${VsVersion}buildtools"
+          # Misc
+          choco install -y cmake
+          choco install -y winflexbison3
+          choco install -y windows-sdk-8.1
+          # choco install -y wixtoolset
+          function Install-Exe {
+            param (
+              [string]$Url,
+              [string]$Dir
+            )
+            $TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().Guid)
+            $ExeFile = Join-Path $TempDir inst.exe
+            New-Item -ItemType Directory -Path $TempDir
+            Invoke-WebRequest -Uri $Url -OutFile $ExeFile -UseBasicParsing
+            Start-Process -Wait -FilePath $ExeFile -ArgumentList @('/VERYSILENT', '/INSTALL', '/PASSIVE', '/NORESTART', "/DIR=${Dir}")
+            Remove-Item -Recurse -Path $TempDir
+          }
+          $BoostVersion = @(1, 71, 0)
+          Install-Exe -Url "https://deac-fra.dl.sourceforge.net/project/boost/boost-binaries/$($BoostVersion -join '.')/boost_$($BoostVersion -join '_')-msvc-14.2-64.exe" -Dir "C:\local\boost_$($BoostVersion -join '_')-Win64"
+          $OpensslVersion = '1_1_1h'
+          Install-Exe -Url "https://slproweb.com/download/Win64OpenSSL-${OpensslVersion}.exe" -Dir "C:\local\OpenSSL_${OpensslVersion}-Win64"
 
       - name: Source
         run: |

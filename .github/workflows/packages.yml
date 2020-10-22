@@ -50,7 +50,7 @@ jobs:
           choco install -y cmake
           choco install -y winflexbison3
           choco install -y windows-sdk-8.1
-          # choco install -y wixtoolset
+          choco install -y wixtoolset
           function Install-Exe {
             param (
               [string]$Url,

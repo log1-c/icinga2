@@ -327,10 +327,14 @@ jobs:
         run: |
           git checkout -B master
           cd windows-icinga2
-          powershell.exe .\source.ps1
+          & .\source.ps1
 
       - name: Binary
         working-directory: windows-icinga2
         run: |
-          $Env:BOOST_INCLUDE_DIR = $Env:BOOST_ROOT_1_72_0
-          powershell.exe .\build.ps1
+          cd icinga2
+          Set-Content ./CMakeLists.txt "cmake_policy(SET CMP0074 NEW)
+          $(Get-Content -Raw ./CMakeLists.txt)"
+          cd ..
+          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
+          & .\build.ps1

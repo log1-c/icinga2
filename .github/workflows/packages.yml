@@ -10,13 +10,13 @@
 
     env:
       BITS: '${{ matrix.bits }}'
-      ICINGA_BUILD_PROJECT: icinga2
+      #ICINGA_BUILD_PROJECT: icinga2
       ICINGA_BUILD_TYPE: snapshot
       UPSTREAM_GIT_URL: file://D:/a/icinga2/icinga2/.git
-      VS_INSTALL_PATH: >-
-        C:\Program Files (x86)\Microsoft Visual Studio\2019
-      VS150COMNTOOLS: >-
-        /c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/Tools
+      #VS_INSTALL_PATH: >-
+      #  C:\Program Files (x86)\Microsoft Visual Studio\2019
+      #VS150COMNTOOLS: >-
+      #  /c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/Common7/Tools
 
     steps:
       - name: Checkout HEAD
@@ -35,8 +35,4 @@
       - name: Binary
         working-directory: windows-icinga2
         run: |
-          $Env:BOOST_ROOT = $Env:BOOST_ROOT_1_72_0
-          $Env:BOOST_INCLUDE_DIR = $Env:BOOST_ROOT + '/include'
-          $Env:BOOST_LIBRARYDIR = $Env:BOOST_ROOT + '/lib'
-          (Get-Content build.ps1 |Select-String -SimpleMatch -NotMatch BOOST) |Set-Content build.ps1
           & .\build.ps1

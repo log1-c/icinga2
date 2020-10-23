@@ -46,6 +46,7 @@ jobs:
             $TempDir = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().Guid)
             $ExeFile = Join-Path $TempDir inst.exe
             New-Item -ItemType Directory -Path $TempDir
+            Write-Output $Url
             Invoke-WebRequest -Uri $Url -OutFile $ExeFile -UseBasicParsing
             Start-Process -Wait -FilePath $ExeFile -ArgumentList @('/VERYSILENT', '/INSTALL', '/PASSIVE', '/NORESTART', "/DIR=${Dir}")
             Remove-Item -Recurse -Path $TempDir

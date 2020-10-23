@@ -37,20 +37,6 @@ jobs:
 
       - name: Build tools
         run: |
-          # VS
-          $VsVersion = 2019
-          choco install -y "visualstudio${VsVersion}community"
-          choco install -y "visualstudio${VsVersion}-workload-netcoretools"
-          choco install -y "visualstudio${VsVersion}-workload-vctools"
-          choco install -y "visualstudio${VsVersion}-workload-manageddesktop"
-          choco install -y "visualstudio${VsVersion}-workload-nativedesktop"
-          choco install -y "visualstudio${VsVersion}-workload-universal"
-          choco install -y "visualstudio${VsVersion}buildtools"
-          # Misc
-          choco install -y cmake
-          choco install -y winflexbison3
-          choco install -y windows-sdk-8.1
-          choco install -y wixtoolset
           function Install-Exe {
             param (
               [string]$Url,
@@ -63,10 +49,24 @@ jobs:
             Start-Process -Wait -FilePath $ExeFile -ArgumentList @('/VERYSILENT', '/INSTALL', '/PASSIVE', '/NORESTART', "/DIR=${Dir}")
             Remove-Item -Recurse -Path $TempDir
           }
+          $VsVersion = 2019
           $BoostVersion = @(1, 71, 0)
-          Install-Exe -Url "https://deac-fra.dl.sourceforge.net/project/boost/boost-binaries/$($BoostVersion -join '.')/boost_$($BoostVersion -join '_')-msvc-14.2-64.exe" -Dir "C:\local\boost_$($BoostVersion -join '_')-Win64"
           $OpensslVersion = '1_1_1h'
-          Install-Exe -Url "https://slproweb.com/download/Win64OpenSSL-${OpensslVersion}.exe" -Dir "C:\local\OpenSSL_${OpensslVersion}-Win64"
+          # VS
+          choco install -y "visualstudio${VsVersion}community"
+          choco install -y "visualstudio${VsVersion}-workload-netcoretools"
+          choco install -y "visualstudio${VsVersion}-workload-vctools"
+          choco install -y "visualstudio${VsVersion}-workload-manageddesktop"
+          choco install -y "visualstudio${VsVersion}-workload-nativedesktop"
+          choco install -y "visualstudio${VsVersion}-workload-universal"
+          choco install -y "visualstudio${VsVersion}buildtools"
+          # Misc
+          choco install -y cmake
+          choco install -y winflexbison3
+          choco install -y windows-sdk-8.1
+          choco install -y wixtoolset
+          Install-Exe -Url "https://deac-fra.dl.sourceforge.net/project/boost/boost-binaries/$($BoostVersion -join '.')/boost_$($BoostVersion -join '_')-msvc-14.2-${Env:BITS}.exe" -Dir "C:\local\boost_$($BoostVersion -join '_')-Win${Env:BITS}"
+          Install-Exe -Url "https://slproweb.com/download/Win${Env:BITS}OpenSSL-${OpensslVersion}.exe" -Dir "C:\local\OpenSSL_${OpensslVersion}-Win${Env:BITS}"
 
       - name: Source
         run: |
@@ -77,4 +77,5 @@ jobs:
       - name: Binary
         working-directory: windows-icinga2
         run: |
+          New-Item -ItemType Directory -Path 'C:\Program Files\Icinga2\WillBeRemoved' -ErrorAction SilentlyContinue
           & .\build.ps1

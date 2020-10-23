@@ -172,6 +172,11 @@ add_definitions(-DBOOST_COROUTINES_NO_DEPRECATION_WARNING)
 
 add_definitions(-DBOOST_FILESYSTEM_NO_DEPRECATED)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+  set(ICINGA2_STACKTRACE_USE_BACKTRACE_SYMBOLS TRUE)
+  add_definitions(-D_GNU_SOURCE)
+endif()
+
 link_directories(${Boost_LIBRARY_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 

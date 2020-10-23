@@ -37,6 +37,7 @@ jobs:
 
       - name: Build tools
         run: |
+          Set-PSDebug -Trace 1
           function Install-Exe {
             param (
               [string]$Url,
